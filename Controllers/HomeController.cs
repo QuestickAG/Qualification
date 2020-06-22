@@ -29,6 +29,11 @@ namespace Qualification.Controllers
             return View();
         }
 
+        public IActionResult Employer()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
