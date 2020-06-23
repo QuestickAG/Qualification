@@ -23,7 +23,7 @@ namespace Qualification.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-
+        
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
@@ -35,7 +35,7 @@ namespace Qualification.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
         }
-
+        
         [BindProperty]
         public InputModel Input { get; set; }
 
