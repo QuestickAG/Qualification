@@ -1,45 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using Qualification.Models;
 
 namespace Qualification.Areas.Identity.Pages.Account.Manage
 {
     public class TwoFactorAuthenticationModel : PageModel
     {
-        private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}";
-
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly ILogger<TwoFactorAuthenticationModel> _logger;
 
-        public TwoFactorAuthenticationModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
-            ILogger<TwoFactorAuthenticationModel> logger)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _logger = logger;
-        }
-
-        public bool HasAuthenticator { get; set; }
-
-        public int RecoveryCodesLeft { get; set; }
-
-        [BindProperty]
-        public bool Is2faEnabled { get; set; }
-
-        public bool IsMachineRemembered { get; set; }
+        public DbContext DbContext { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public TwoFactorAuthenticationModel(
+            UserManager<IdentityUser> userManager,
+            DbContext context)
+        {
+            _userManager = userManager;
+            DbContext = context;
+        }
+
+        [BindProperty]
+        public InputModel Input { get; set; }
+
+        public class InputModel
+        {
+            [Required]
+            [MinLength(3)]
+            [Display(Name = "Имя")]
+            public string Name { get; set; }
+
+            [Required]
+            [MinLength(3)]
+            [Display(Name = "Фамилия")]
+            public string Surname { get; set; }
+
+            [Required]
+            [MinLength(3)]
+            [Display(Name = "Отчество")]
+            public string MiddleName { get; set; }
+        }
+
+        private async Task LoadAsync(IdentityUser user)
+        {
+            var profile = await DbContext.Set<ProfileInfo>().FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+            Input = new InputModel
+            {
+                Name = profile.Name,
+                Surname = profile.SurName,
+                MiddleName = profile.MiddleName
+            };
+        }
+
+        public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -47,24 +66,25 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null;
-            Is2faEnabled = await _userManager.GetTwoFactorEnabledAsync(user);
-            IsMachineRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user);
-            RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user);
-
+            await LoadAsync(user);
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (ModelState.IsValid)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                var user = await _userManager.GetUserAsync(User);
+                var profile = await DbContext.Set<ProfileInfo>().FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+                profile.Name = Input.Name;
+                profile.SurName = Input.Surname;
+                profile.MiddleName = Input.MiddleName;
+
+                await DbContext.SaveChangesAsync();
             }
 
-            await _signInManager.ForgetTwoFactorClientAsync();
-            StatusMessage = "The current browser has been forgotten. When you login again from this browser you will be prompted for your 2fa code.";
+            StatusMessage = "Анкета обновлена";
             return RedirectToPage();
         }
     }

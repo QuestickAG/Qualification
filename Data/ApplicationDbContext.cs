@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Qualification.Models;
 
 namespace Qualification.Data
 {
@@ -12,5 +13,7 @@ namespace Qualification.Data
             : base(options)
         {
         }
+
+        public DbSet<ProfileInfo> ProfileInfos { get; set; }
     }
 }

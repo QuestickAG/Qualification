@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore.Internal;
+using Qualification.Models;
 
 namespace Qualification
 {
@@ -29,8 +30,10 @@ namespace Qualification
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<DbContext, ApplicationDbContext>();
+
             services.AddDefaultIdentity<IdentityUser>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
@@ -41,7 +44,7 @@ namespace Qualification
                 options.Password.RequireUppercase = false;
             }).AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
                 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews();            
             services.AddRazorPages();
         }
 
