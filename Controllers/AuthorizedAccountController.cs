@@ -46,5 +46,23 @@ namespace Qualification.Controllers
 
             return View(employers);
         }
+
+        [Authorize(Roles ="admin")]
+        public async Task<IActionResult> Employee()
+        {
+            var employeeRole = await _roleManager
+                .FindByNameAsync("employee")
+                ?? throw new Exception("Не удалось найти роль");
+
+            var employeeIdsQuery = _dbContext.UserRoles
+                .Where(x => x.RoleId == employeeRole.Id)
+                .Select(x => x.UserId);
+
+            var employies = _dbContext.Users
+                .Where(x => employeeIdsQuery.Any(id => id == x.Id))
+                .ToList();
+
+            return View(employies);
+        }
     }
 }

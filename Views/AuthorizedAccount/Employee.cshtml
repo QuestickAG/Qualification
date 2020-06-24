@@ -1,0 +1,21 @@
+﻿
+@model List<Microsoft.AspNetCore.Identity.IdentityUser>
+
+@foreach (var user in Model)
+{
+    <div class=" container">
+        <h10>Название компании:</h10>
+        <p>@user.Email </p>
+        <h10>Телефон компании:</h10>
+        @if (@user.PhoneNumber == null)
+        {
+            <h10>телефон компании отсутствует</h10>
+        }
+        else
+        {
+            <h10> @user.PhoneNumber</h10>
+        }
+        <p></p>
+
+    </div>
+}
