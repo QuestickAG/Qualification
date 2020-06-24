@@ -28,13 +28,14 @@
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label class="form-check-label">
-                            <input id="RoleType" name="RoleType" type="radio" value="Employee" />
-                            <span>Работник</span> <br />
-                            <input id="RoleType" name="RoleType" type="radio" value="Employer" />
-                            <span>Работодатель</span> <br />
-                        </label>
+                        <label asp-for="Input.RoleType"></label>
+                        <div class="form-group">
+                            @Html.RadioButtonFor(x => x.Input.RoleType, Qualification.Models.RoleType.Employee) Работник
+                            @Html.RadioButtonFor(x => x.Input.RoleType, Qualification.Models.RoleType.Employer) Работодатель
+                        </div>
+                        <span asp-validation-for="Input.RoleType" class="text-danger"></span>
                     </div>
+                    <h9>Нажимая кнопку зарегистрироваться вы принимаете условия полититки конфиденциальности</h9>
                     <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
                 </form>
             </div>

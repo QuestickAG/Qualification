@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Qualification.Models;
 
 namespace Qualification.Areas.Identity.Pages.Account
 {
@@ -21,6 +22,7 @@ namespace Qualification.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         
@@ -61,8 +63,9 @@ namespace Qualification.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "Пароли не совпадают.")]
             public string ConfirmPassword { get; set; }
 
-            [Display(Name = "Выберите Роль")]
-            public Models.RoleType RoleType { get; set; }
+            [Required(ErrorMessage = "Не выбрана роль")]
+            [Display(Name = "Выберите роль")]
+            public RoleType RoleType { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -90,6 +93,20 @@ namespace Qualification.Areas.Identity.Pages.Account
                         pageHandler: null,
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
+
+                    if (Input.RoleType == RoleType.Employee)
+                    {
+                        await _userManager.AddToRoleAsync(user, "employee");
+                    }
+                    else if(Input.RoleType == RoleType.Employer)
+                    {
+                        await _userManager.AddToRoleAsync(user, "employer");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Не выбрана роль", "Пользователь не выбрал роль при регистрации");
+                    }
+                   
 
                     await _emailSender.SendEmailAsync(Input.Email, "Подтвердите email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");

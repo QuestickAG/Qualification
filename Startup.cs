@@ -12,6 +12,7 @@ using Qualification.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Qualification
 {
@@ -30,16 +31,16 @@ namespace Qualification
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => 
-            { 
+            services.AddDefaultIdentity<IdentityUser>(options =>
+            {
                 options.SignIn.RequireConfirmedAccount = false;
                 options.Password.RequiredLength = 6;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
-                })
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            }).AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+                
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
