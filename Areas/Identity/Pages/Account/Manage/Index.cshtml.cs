@@ -22,7 +22,7 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
-        
+        [Display(Name = "Логин")]
         public string Username { get; set; }
 
         [TempData]

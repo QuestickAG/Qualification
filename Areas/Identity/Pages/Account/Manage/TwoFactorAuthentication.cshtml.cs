@@ -30,17 +30,16 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "Не указано имя")]
             [MinLength(3)]
             [Display(Name = "Имя")]
             public string Name { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Не указана фамилия")]
             [MinLength(3)]
             [Display(Name = "Фамилия")]
             public string Surname { get; set; }
 
-            [Required]
             [MinLength(3)]
             [Display(Name = "Отчество")]
             public string MiddleName { get; set; }
@@ -52,9 +51,9 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                Name = profile.Name,
-                Surname = profile.SurName,
-                MiddleName = profile.MiddleName
+                Name = profile?.Name ?? "",
+                Surname = profile?.SurName ?? "",
+                MiddleName = profile?.MiddleName ?? ""
             };
         }
 
@@ -76,6 +75,20 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
             {
                 var user = await _userManager.GetUserAsync(User);
                 var profile = await DbContext.Set<ProfileInfo>().FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+                if(profile == null)
+                {
+                    var newProfile = new ProfileInfo() 
+                    {
+                        UserId = user.Id, 
+                        MiddleName = "", 
+                        SurName = "", 
+                        Name = ""
+                    };
+                    DbContext.Add(newProfile);
+                    await DbContext.SaveChangesAsync();
+                    profile = newProfile;
+                }
 
                 profile.Name = Input.Name;
                 profile.SurName = Input.Surname;

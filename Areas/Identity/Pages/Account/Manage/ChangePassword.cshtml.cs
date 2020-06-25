@@ -33,20 +33,20 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "Не указан пароль")]
             [DataType(DataType.Password)]
             [Display(Name = "Старый пароль")]
             public string OldPassword { get; set; }
 
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "Не указан пароль")]
+            [StringLength(100, ErrorMessage = "Длина вашего пароля меньше {2} символов или более {1} символов.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Новый пароль")]
             public string NewPassword { get; set; }
 
             [DataType(DataType.Password)]
             [Display(Name = "Подтвердите новый пароль")]
-            [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+            [Compare("NewPassword", ErrorMessage = "Пароли не совподают.")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -92,7 +92,7 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
-            StatusMessage = "Your password has been changed.";
+            StatusMessage = "Ваш пароль изменен";
 
             return RedirectToPage();
         }

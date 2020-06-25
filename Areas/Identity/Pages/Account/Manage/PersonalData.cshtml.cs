@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -18,7 +19,19 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _logger = logger;
         }
+        [TempData]
+        public string StatusMessage { get; set; }
 
+        [BindProperty]
+        public InputModel Input { get; set; }
+
+        public class InputModel
+        {
+            [Required]
+            [MinLength(3)]
+            [Display(Name = "Баланс")]
+            public string Money { get; set; }
+        }
         public async Task<IActionResult> OnGet()
         {
             var user = await _userManager.GetUserAsync(User);

@@ -1,22 +1,41 @@
 ﻿
-@model List<Microsoft.AspNetCore.Identity.IdentityUser>
+@model List<EmployerViewModel>
 
-@foreach (var user in Model)
-{
-    <div class=" container">
-        <h10>Название компании:</h10>
-        <p>@user.Email </p>
-        <h10>Телефон компании:</h10>
-        @if (@user.PhoneNumber == null)
-        {
-            <h10>телефон компании отсутствует</h10>
-        }
-        else
-        {
-            <h10> @user.PhoneNumber</h10>
-        }
-        <p></p>
 
-    </div>
-}
+<div class=" container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Email компании</th>
+                <th scope="col">Телефон</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Отчество</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+            <tr>
+                <td>@user.Email</td>
+                <td>
+                    @if (@user.PhoneNumber == null)
+                    {
+                        <p>телефон компании отсутствует</p>
+                    }
+                    else
+                    {
+                        <p>@user.PhoneNumber</p>
+                    }
+                </td>
+                <td>@user.Name</td>
+                <td>@user.Surname</td>
+                <td>@user.MiddleName</td>
+
+            </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
 

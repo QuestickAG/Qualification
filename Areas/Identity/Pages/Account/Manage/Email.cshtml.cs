@@ -43,9 +43,9 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
-            [Display(Name = "New email")]
+            [Required(ErrorMessage = "Не указан электронный адрес")]
+            [Display(Name = "Новый email")]
+            [EmailAddress(ErrorMessage = "Неверный формат Email")]
             public string NewEmail { get; set; }
         }
 
@@ -103,11 +103,11 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
                     "Confirm your email",
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                StatusMessage = "Confirmation link to change email sent. Please check your email.";
+                StatusMessage = "Ссылка подтверждения отправлена электронным письмом. Пожалуйста, проверьте свою электронную почту.";
                 return RedirectToPage();
             }
 
-            StatusMessage = "Your email is unchanged.";
+            StatusMessage = "Ваш адрес электронной почты не изменился.";
             return RedirectToPage();
         }
 

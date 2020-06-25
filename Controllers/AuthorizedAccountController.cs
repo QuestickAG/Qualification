@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 using Qualification.Data;
+using Qualification.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +16,16 @@ namespace Qualification.Controllers
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
         public AuthorizedAccountController(
             ApplicationDbContext dbContext,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            UserManager<IdentityUser> userManager)
         {
             _dbContext = dbContext;
             _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         public IActionResult GetEmployer()
@@ -44,8 +49,26 @@ namespace Qualification.Controllers
                 .Where(x => employerIdsQuery.Any(id => id == x.Id))
                 .ToList();
 
-            return View(employers);
+            var employerViewModels = employers
+                .Select(x => new
+                {
+                    x,
+                    Profile =_dbContext.ProfileInfos.FirstOrDefault(y => y.UserId == x.Id)
+                })
+                .Select(x => new EmployerViewModel() 
+                { 
+                    Email = x.x.Email,
+                    PhoneNumber = x.x.PhoneNumber,
+                    Name = x.Profile?.Name ?? "",
+                    MiddleName = x.Profile?.MiddleName?? "",
+                    Surname = x.Profile?.SurName ?? ""
+                })
+                .ToList();
+
+            return View(employerViewModels);
         }
+
+        
 
         [Authorize(Roles ="admin")]
         public async Task<IActionResult> Employee()
@@ -62,7 +85,23 @@ namespace Qualification.Controllers
                 .Where(x => employeeIdsQuery.Any(id => id == x.Id))
                 .ToList();
 
-            return View(employies);
+            var employerViewModels = employies
+                .Select(x => new
+                {
+                    x,
+                    Profile = _dbContext.ProfileInfos.FirstOrDefault(y => y.UserId == x.Id)
+                })
+                .Select(x => new EmployerViewModel()
+                {
+                    Email = x.x.Email,
+                    PhoneNumber = x.x.PhoneNumber,
+                    Name = x.Profile?.Name ?? "",
+                    MiddleName = x.Profile?.MiddleName ?? "",
+                    Surname = x.Profile?.SurName ?? ""
+                })
+                .ToList();
+
+            return View(employerViewModels);
         }
     }
 }
