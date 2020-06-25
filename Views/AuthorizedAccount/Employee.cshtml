@@ -2,32 +2,32 @@
 @model List<Microsoft.AspNetCore.Identity.IdentityUser>
 
 
-    <div class=" container">
-        <table class="table table-striped">
-            <thead>
+<div class=" container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Название компании</th>
+                <th scope="col">Телефон</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
                 <tr>
-                    <th scope="col">Название компании</th>
-                    <th scope="col">Телефон</th>
+                    <td>@user.Email</td>
+                    <td>
+                        @if (@user.PhoneNumber == null)
+                        {
+                            <p>телефон компании отсутствует</p>
+                        }
+                        else
+                        {
+                            <p>@user.PhoneNumber</p>
+                        }
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var user in Model)
-                {
-                    <tr>
-                        <td>@user.Email</td>
-                        <td>
-                            @if (@user.PhoneNumber == null)
-                            {
-                                <p>телефон компании отсутствует</p>
-                            }
-                            else
-                            {
-                                <p>@user.PhoneNumber</p>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>                
-        </table>
+            }
+        </tbody>
+    </table>
 
-    </div>
+</div>
