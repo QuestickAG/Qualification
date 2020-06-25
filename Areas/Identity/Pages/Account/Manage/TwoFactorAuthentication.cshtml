@@ -22,6 +22,17 @@
         <input asp-for="Input.MiddleName" class="form-control" />
         <span asp-validation-for="Input.MiddleName" class="text-danger"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="Input.Education"></label>
+        <input asp-for="Input.Education" class="form-control" />
+        <span asp-validation-for="Input.Education" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Input.HistoryOfWork"></label>
+        <h6>Пример:Грузчик-2г.1м.;Плиточник-1.; и т.д.</h6>
+        <input asp-for="Input.HistoryOfWork" class="form-control" />
+        <span asp-validation-for="Input.HistoryOfWork" class="text-danger"></span>
+    </div>
     <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>
 

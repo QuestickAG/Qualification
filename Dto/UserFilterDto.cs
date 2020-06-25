@@ -1,18 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Qualification.Models
+namespace Qualification.Dto
 {
-    public class ProfileInfo
+    public class UserFilterDto
     {
-        public IdentityUser User { get; set; }
+        public string Email { get; set; }
 
-        public long Id { get; set; }
-
-        public string UserId { get; set; }
+        public string PhoneNumber { get; set; }
 
         public string Name { get; set; }
 

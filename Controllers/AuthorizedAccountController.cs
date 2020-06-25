@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
 using Qualification.Data;
+using Qualification.Dto;
+using Qualification.Extensions;
 using Qualification.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Qualification.Controllers
@@ -18,16 +21,13 @@ namespace Qualification.Controllers
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<IdentityUser> _userManager;
 
         public AuthorizedAccountController(
             ApplicationDbContext dbContext,
-            RoleManager<IdentityRole> roleManager,
-            UserManager<IdentityUser> userManager)
+            RoleManager<IdentityRole> roleManager)
         {
             _dbContext = dbContext;
             _roleManager = roleManager;
-            _userManager = userManager;
         }
 
         public IActionResult GetEmployer()
@@ -57,13 +57,15 @@ namespace Qualification.Controllers
                     x,
                     Profile =_dbContext.ProfileInfos.FirstOrDefault(y => y.UserId == x.Id)
                 })
-                .Select(x => new EmployerViewModel() 
+                .Select(x => new UserDto() 
                 { 
                     Email = x.x.Email,
                     PhoneNumber = x.x.PhoneNumber,
                     Name = x.Profile?.Name ?? "",
                     MiddleName = x.Profile?.MiddleName?? "",
-                    Surname = x.Profile?.SurName ?? ""
+                    Surname = x.Profile?.SurName ?? "",
+                    Education = x.Profile?.Education ?? "",
+                    HistoryOfWork = x.Profile?.HistoryOfWork ?? ""
                 })
                 .ToList();
 
@@ -73,7 +75,7 @@ namespace Qualification.Controllers
         
 
         [Authorize(Roles ="admin")]
-        public async Task<IActionResult> Employee()
+        public async Task<IActionResult> Employee(UserFilterDto filterParams)
         {
             var employeeRole = await _roleManager
                 .FindByNameAsync("employee")
@@ -83,27 +85,22 @@ namespace Qualification.Controllers
                 .Where(x => x.RoleId == employeeRole.Id)
                 .Select(x => x.UserId);
 
-            var employies = _dbContext.Users
-                .Where(x => employeeIdsQuery.Any(id => id == x.Id))
+            var employees = _dbContext.ProfileInfos
+                .Where(x => employeeIdsQuery.Contains(x.User.Id))
+                .Select(x => new UserDto
+                {
+                    Email = x.User.Email,
+                    PhoneNumber = x.User.PhoneNumber,
+                    Name = x.Name ?? string.Empty,
+                    MiddleName = x.MiddleName ?? string.Empty,
+                    Surname = x.SurName ?? string.Empty,
+                    Education = x.Education ?? string.Empty,
+                    HistoryOfWork = x.HistoryOfWork ?? string.Empty,
+                })
+                .FilterEmployees(filterParams)
                 .ToList();
 
-            var employerViewModels = employies
-                .Select(x => new
-                {
-                    x,
-                    Profile = _dbContext.ProfileInfos.FirstOrDefault(y => y.UserId == x.Id)
-                })
-                .Select(x => new EmployerViewModel()
-                {
-                    Email = x.x.Email,
-                    PhoneNumber = x.x.PhoneNumber,
-                    Name = x.Profile?.Name ?? "",
-                    MiddleName = x.Profile?.MiddleName ?? "",
-                    Surname = x.Profile?.SurName ?? ""
-                })
-                .ToList();
-
-            return View(employerViewModels);
+            return View(employees);
         }
     }
 }

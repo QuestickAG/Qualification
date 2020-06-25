@@ -43,6 +43,14 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
             [MinLength(3)]
             [Display(Name = "Отчество")]
             public string MiddleName { get; set; }
+
+            [MinLength(3)]
+            [Display(Name = "Образование")]
+            public string Education { get; set; }
+
+            [MinLength(3)]
+            [Display(Name = "История работы")]
+            public string HistoryOfWork { get; set; }
         }
 
         private async Task LoadAsync(IdentityUser user)
@@ -53,7 +61,9 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
             {
                 Name = profile?.Name ?? "",
                 Surname = profile?.SurName ?? "",
-                MiddleName = profile?.MiddleName ?? ""
+                MiddleName = profile?.MiddleName ?? "",
+                Education = profile?.Education ?? "",
+                HistoryOfWork = profile?.HistoryOfWork ?? ""
             };
         }
 
@@ -83,7 +93,9 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
                         UserId = user.Id, 
                         MiddleName = "", 
                         SurName = "", 
-                        Name = ""
+                        Name = "",
+                        Education = "",
+                        HistoryOfWork = ""
                     };
                     DbContext.Add(newProfile);
                     await DbContext.SaveChangesAsync();
@@ -93,6 +105,8 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
                 profile.Name = Input.Name;
                 profile.SurName = Input.Surname;
                 profile.MiddleName = Input.MiddleName;
+                profile.Education = Input.Education;
+                profile.HistoryOfWork = Input.HistoryOfWork;
 
                 await DbContext.SaveChangesAsync();
             }

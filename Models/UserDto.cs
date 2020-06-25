@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Qualification.Models
 {
-    public class EmployerViewModel
+    public class UserDto
     {
         public string Email { get; set; }
 
@@ -16,5 +16,9 @@ namespace Qualification.Models
         public string Surname { get; set; }
 
         public string MiddleName { get; set; }
+
+        public string Education { get; set; }
+
+        public string HistoryOfWork { get; set; }
     }
 }
