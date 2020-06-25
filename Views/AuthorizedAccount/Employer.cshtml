@@ -14,10 +14,25 @@
             </tr>
         </thead>
         <tbody>
+            @using (@Html.BeginForm("Employer", "AuthorizedAccount"))
+            {
+                <tr>
+                    <td><input type="text" name="Email" /> </td>
+                    <td><input type="text" name="Name" /> </td>
+                    <td><input type="text" name="SurName" /> </td>
+                    <td><input type="text" name="MiddleName" /> </td>
+                    <td><input type="text" name="PhoneNumber" /> </td>
+                    <td><input type="submit" value="Найти" /> </td>
+                    <td></td>
+                </tr>
+            }
             @foreach (var user in Model)
             {
             <tr>
                 <td>@user.Email</td>
+                <td>@user.Name</td>
+                <td>@user.Surname</td>
+                <td>@user.MiddleName</td>
                 <td>
                     @if (@user.PhoneNumber == null)
                     {
@@ -28,9 +43,7 @@
                         <p>@user.PhoneNumber</p>
                     }
                 </td>
-                <td>@user.Name</td>
-                <td>@user.Surname</td>
-                <td>@user.MiddleName</td>
+
 
             </tr>
             }

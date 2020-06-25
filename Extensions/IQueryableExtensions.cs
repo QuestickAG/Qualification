@@ -53,5 +53,43 @@ namespace Qualification.Extensions
 
             return query;
         }
+
+        public static IQueryable<T> FilterEmployers<T>(
+            this IQueryable<T> query,
+            UserFilterDto filterParams)
+            where T : UserDto
+        {
+            if (filterParams == null)
+            {
+                return query;
+            }
+
+            if (!string.IsNullOrEmpty(filterParams.Email))
+            {
+                query = query.Where(x => x.Email.ToLower().Contains(filterParams.Email.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(filterParams.PhoneNumber))
+            {
+                query = query.Where(x => x.PhoneNumber.ToLower().Contains(filterParams.PhoneNumber.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(filterParams.Name))
+            {
+                query = query.Where(x => x.Name.ToLower().Contains(filterParams.Name.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(filterParams.SurName))
+            {
+                query = query.Where(x => x.Surname.ToLower().Contains(filterParams.SurName.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(filterParams.MiddleName))
+            {
+                query = query.Where(x => x.MiddleName.ToLower().Contains(filterParams.MiddleName.ToLower()));
+            }
+
+            return query;
+        }
     }
 }

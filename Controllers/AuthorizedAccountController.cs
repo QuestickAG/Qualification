@@ -37,7 +37,7 @@ namespace Qualification.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Employer()
+        public async Task<IActionResult> Employer(UserFilterDto filterParams)
         {
             var employerRole = await _roleManager
                 .FindByNameAsync("employer")
@@ -47,29 +47,41 @@ namespace Qualification.Controllers
                 .Where(x => x.RoleId == employerRole.Id)
                 .Select(x => x.UserId);
 
-            var employers = _dbContext.Users
+            /*var employers = _dbContext.Users
                 .Where(x => employerIdsQuery.Any(id => id == x.Id))
                 .ToList();
-
-            var employerViewModels = employers
-                .Select(x => new
+            */
+            var employers = _dbContext.ProfileInfos
+                .Where(x => employerIdsQuery.Contains(x.User.Id))
+                .Select(x => new UserDto
                 {
-                    x,
-                    Profile =_dbContext.ProfileInfos.FirstOrDefault(y => y.UserId == x.Id)
+                    Email = x.User.Email,
+                    PhoneNumber = x.User.PhoneNumber,
+                    Name = x.Name ?? string.Empty,
+                    MiddleName = x.MiddleName ?? string.Empty,
+                    Surname = x.SurName ?? string.Empty,
                 })
-                .Select(x => new UserDto() 
-                { 
-                    Email = x.x.Email,
-                    PhoneNumber = x.x.PhoneNumber,
-                    Name = x.Profile?.Name ?? "",
-                    MiddleName = x.Profile?.MiddleName?? "",
-                    Surname = x.Profile?.SurName ?? "",
-                    Education = x.Profile?.Education ?? "",
-                    HistoryOfWork = x.Profile?.HistoryOfWork ?? ""
-                })
+                .FilterEmployers(filterParams)
                 .ToList();
 
-            return View(employerViewModels);
+            //var employerViewModels = employers
+            //    .Select(x => new
+            //    {
+            //        x,
+            //        Profile =_dbContext.ProfileInfos.FirstOrDefault(y => y.UserId == x.Id)
+            //    })
+            //    .Select(x => new UserDto() 
+            //    { 
+            //        Email = x.x.Email,
+            //        PhoneNumber = x.x.PhoneNumber,
+            //        Name = x.Profile?.Name ?? "",
+            //        MiddleName = x.Profile?.MiddleName?? "",
+            //        Surname = x.Profile?.SurName ?? "",
+            //        Education = x.Profile?.Education ?? "",
+            //        HistoryOfWork = x.Profile?.HistoryOfWork ?? ""
+            //    })
+            //    .ToList();
+            return View(employers);
         }
 
         
