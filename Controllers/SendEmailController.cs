@@ -60,7 +60,7 @@ namespace Qualification.Controllers
 
             message.From.Add( new MailboxAddress("Саттаров Марсэль", "ooopartnercompany@gmail.com"));
 
-            message.To.Add(new MailboxAddress("Mrs. Chanandler Bong", sendEmailDto.Email));
+            message.To.Add(new MailboxAddress(sendEmailDto.Email , sendEmailDto.Email));
 
             message.Subject = sendEmailDto.Subject;
 
