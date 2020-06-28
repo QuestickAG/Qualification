@@ -1,0 +1,33 @@
+﻿
+@model List<UserDto>
+
+@{
+    ViewData["Title"] = "SendEmail";
+}
+<div class="dropdown">
+    <button onclick="myFunction()" class="dropbtn">Сотрудники</button>
+    <div id="myDropdown" class="dropdown-content">
+        <input type="text" placeholder="Поиск.." id="myInput" onkeyup="filterFunction()">
+        @foreach (var user in Model)
+        {
+            <a id="@user.Email" onclick="selectEmployee('@user.Email')">@user.Email @user.Surname @user.Name @user.Education </a>
+        }
+    </div>
+</div>
+
+@using (Html.BeginForm("TrueSendEmail", "SendEmail"))
+{
+    <input type="text" id="#Employee" value="" readonly name="Email" />
+    <div class="form-group">
+        <label>Тема</label>
+        <input class="form-control" value="Приглашение на собес" name="Subject" />
+    </div>
+    <div class="form-group">
+        <label>Сообщение</label>
+        <textarea class="form-control" style="height: 300px;" name="Message">Приглашаем Вас на собеседование приходите в 16: 00 по адресу г.Казань ул. Кремлевская 1</textarea>
+    </div>
+    <input type="submit" value="Отправить" />
+}
+
+
+

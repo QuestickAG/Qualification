@@ -32,7 +32,6 @@ namespace Qualification.Controllers
 
         public IActionResult GetEmployer()
         {
-
             return View();
         }
 
@@ -51,15 +50,18 @@ namespace Qualification.Controllers
                 .Where(x => employerIdsQuery.Any(id => id == x.Id))
                 .ToList();
             */
+
             var employers = _dbContext.ProfileInfos
                 .Where(x => employerIdsQuery.Contains(x.User.Id))
-                .Select(x => new UserDto
+                .Select(x => new UserDto()
                 {
                     Email = x.User.Email,
                     PhoneNumber = x.User.PhoneNumber,
                     Name = x.Name ?? string.Empty,
                     MiddleName = x.MiddleName ?? string.Empty,
                     Surname = x.SurName ?? string.Empty,
+                    Education = x.Education ?? string.Empty,
+                    HistoryOfWork = x.HistoryOfWork ?? string.Empty,
                 })
                 .FilterEmployers(filterParams)
                 .ToList();
@@ -99,7 +101,7 @@ namespace Qualification.Controllers
 
             var employees = _dbContext.ProfileInfos
                 .Where(x => employeeIdsQuery.Contains(x.User.Id))
-                .Select(x => new UserDto
+                .Select(x => new UserDto()
                 {
                     Email = x.User.Email,
                     PhoneNumber = x.User.PhoneNumber,

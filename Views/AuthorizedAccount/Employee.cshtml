@@ -1,8 +1,14 @@
 ﻿
 @model List<UserDto>
 
+
+
 <div class=" container">
-    <table class="table table-striped" style="position: absolute; top: 70px; left: 0px">
+    <form>
+        <button class="nav-link text-dark" asp-area="" asp-controller="SendEmail" asp-action="SendEmail">Пригласить на собеседование</button>
+    </form>
+
+    <table class="table table-striped" style="position: absolute; top: 125px; left: 0px">
         <thead>
             <tr>
                 <th scope="col">Email работника</th>
@@ -14,6 +20,7 @@
                 <th scope="col">История работы</th>
             </tr>
         </thead>
+
         <tbody>
             @using (@Html.BeginForm("Employee", "AuthorizedAccount"))
             {
@@ -31,27 +38,29 @@
             }
             @foreach (var user in Model)
             {
-            <tr>
-                <td>@user.Email</td>
-                <td>@user.Name</td>
-                <td>@user.Surname</td>
-                <td>@user.MiddleName</td>
+                <tr>
+                    <td>@user.Email</td>
+                    <td>@user.Name</td>
+                    <td>@user.Surname</td>
+                    <td>@user.MiddleName</td>
 
-                <td>
-                    @if (@user.PhoneNumber == null)
-                    {
-                        <p>телефон работника отсутствует</p>
-                    }
-                    else
-                    {
-                        <p>@user.PhoneNumber</p>
-                    }
-                </td>
+                    <td>
+                        @if (@user.PhoneNumber == null)
+                        {
+                            <p>телефон работника отсутствует</p>
+                        }
+                        else
+                        {
+                            <p>@user.PhoneNumber</p>
+                        }
+                    </td>
 
-                <td>@user.Education</td>
-                <td>@user.HistoryOfWork</td>
-            </tr>
-                }
+                    <td>@user.Education</td>
+                    <td>@user.HistoryOfWork</td>
+
+                </tr>
+
+            }
         </tbody>
     </table>
 </div>
