@@ -45,7 +45,7 @@ namespace Qualification.Areas.Identity.Pages.Account.Manage
             public string MiddleName { get; set; }
 
             [MinLength(3)]
-            [Display(Name = "Образование")]
+            [Display(Name = "Профессия")]
             public string Education { get; set; }
 
             [MinLength(3)]
